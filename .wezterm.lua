@@ -6,18 +6,30 @@ local config = wezterm.config_builder()
 -------------------------------------------------------------------------------
 -- Appearance
 -------------------------------------------------------------------------------
-config.font = wezterm.font("MesloLGS Nerd Font Mono")
+-- Try with font fallback for better character support
+config.font = wezterm.font_with_fallback({
+	"MesloLGS Nerd Font Mono",
+	"Menlo",
+	"Monaco",
+	"Consolas",
+})
 config.font_size = 16
+
+-- Explicitly enable font features that might help with underscores
+config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
+
+-- Adjust line height slightly - sometimes helps with character clipping
+config.line_height = 1.1 -- Changed from 1.05
+
 config.enable_tab_bar = false
 config.window_decorations = "TITLE|RESIZE"
 config.window_background_opacity = 1
 config.macos_window_background_blur = 10
 config.enable_scroll_bar = true
 config.scrollback_lines = 20000
--- Assumes OSC 52 support on the remote end
-config.selection_word_boundary = " \t\n{}[]()\"'`,;:|"
-config.term = 'xterm-256color'
 
+config.selection_word_boundary = " \t\n{}[]()\"'`,;:|"
+config.term = "xterm-256color"
 
 -- Harmonised cool-night palette
 config.colors = {
@@ -96,9 +108,12 @@ end)
 -------------------------------------------------------------------------------
 -- Quality-of-life tweaks
 -------------------------------------------------------------------------------
-config.line_height = 1.05
-config.window_padding = { left = 4, right = 4, top = 2, bottom = 2 }
+-- Increased window padding to prevent character clipping
+config.window_padding = { left = 6, right = 6, top = 4, bottom = 4 } -- Increased padding
 config.audible_bell = "Disabled"
+
+-- Disable exit confirmation - for *nix admins who know what they're doing
+config.window_close_confirmation = "NeverPrompt"
 
 -------------------------------------------------------------------------------
 -- Pane-split leader (Ctrl-a  v / s)
@@ -115,9 +130,6 @@ config.keys = {
 wezterm.on("update-right-status", function(win, _)
 	win:set_right_status(wezterm.format({ { Text = wezterm.strftime("%H:%M %Z") } }))
 end)
-
-
--- Uncomment for richer key info in nvim
 
 -------------------------------------------------------------------------------
 -- Hand back the config

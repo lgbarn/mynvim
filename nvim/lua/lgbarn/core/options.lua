@@ -27,3 +27,6 @@ opt.clipboard:append("unnamedplus")
 
 opt.splitright = true
 opt.splitbelow = true
+
+-- Disable right-click context menu and make right-click paste from system clipboard
+opt.mouse = ""
